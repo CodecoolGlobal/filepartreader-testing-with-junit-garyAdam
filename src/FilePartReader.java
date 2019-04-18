@@ -7,28 +7,34 @@ public class FilePartReader {
     private Integer toLine;
 
     public FilePartReader() {
-        setup("lol.txt",3,1);
+        filePath = "hahano";
+        fromLine = -1;
+        toLine = 0;
     }
 
     public void setup(String filePath, Integer fromLine, Integer toLine) {
 
-        if (fromLine>toLine || fromLine<1) throw new IllegalArgumentException();
         this.filePath = filePath;
         this.fromLine = fromLine;
         this.toLine = toLine;
+        if (fromLine>toLine || fromLine<1) throw new IllegalArgumentException();
 
     }
 
-    public String read(){
+    public String read() throws Exception{
 
         return new String(Files.readAllBytes(Paths.get(filePath)));
     }
-    public String readLines(){
+    public String readLines (){
+        String text="";
+        try {
+            text = read();
+        }catch (Exception e){
 
-        String read = read();
-        String[] lines = read.split("\n");
+        }
+        String[] lines = text.split("(?<=\n)");
         String filtered = "";
-        for (int i = fromLine-1; i <= toLine-1;i++)
+        for (int i = fromLine-1; i <= Math.min(toLine-1,lines.length-1);i++)
         {
             filtered+=lines[i];
         }
