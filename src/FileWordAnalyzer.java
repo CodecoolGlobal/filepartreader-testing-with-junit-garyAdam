@@ -1,8 +1,5 @@
-import java.io.StringReader;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class FileWordAnalyzer {
     private FilePartReader filePartReader;
@@ -13,49 +10,37 @@ public class FileWordAnalyzer {
 
     public List<String> getWordsOrderedAlphabetically() {
         List<String> split = splitToList();
-
         Collections.sort(split);
         return split;
     }
 
     public List<String> getWordsContainingSubstring(String subString) {
-        List<String> split = splitToList();
-        split = split
+        return splitToList()
                 .stream()
                 .filter(word -> word.contains(subString))
                 .collect(Collectors.toList());
-        return split;
     }
 
     public List<String> getStringsWhichPalindromes() {
-        List<String> split = splitToList();
-        List<String > result = new ArrayList();
-        for (String word : split) {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(word);
-            String current = stringBuilder.toString();
-            String reversed = stringBuilder.reverse().toString();
-            if (current.equals( reversed)) {
-                result.add(current);
-            }
-        }
-        return result;
+        return splitToList()
+                .stream()
+                .filter(this::isItPalindrome)
+                .collect(Collectors.toList());
 
+    }
+    private boolean isItPalindrome(String word){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(word);
+        String current = stringBuilder.toString();
+        String reversed = stringBuilder.reverse().toString();
+        return current.equals(reversed);
     }
 
 
     private List<String> splitToList() {
-        List<String> spllited =  new ArrayList<>(Arrays.asList(filePartReader.readLines().split(" ")));
-        while (spllited.contains("\n")) {
-            spllited.remove("\n");
-        }
-        List<String> stripped = new ArrayList<>();
-        for (String word : spllited) {
-            String stringword = (String) word;
-            stringword = stringword.replaceAll("\n","");
-            stripped.add(stringword);
-
-        }
-        return stripped;
+        return Arrays.stream(filePartReader.readLines().split(" "))
+                .filter((word) -> !word.equals("\n"))
+                .map((word) -> word.replaceAll("\n", ""))
+                .collect(Collectors.toList());
     }
 }
