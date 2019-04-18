@@ -17,26 +17,26 @@ public class FilePartReader {
         this.filePath = filePath;
         this.fromLine = fromLine;
         this.toLine = toLine;
-        if (fromLine>toLine || fromLine<1) throw new IllegalArgumentException();
+        if (fromLine > toLine || fromLine < 1) throw new IllegalArgumentException();
 
     }
 
-    public String read() throws Exception{
+    public String read() throws Exception {
 
         return new String(Files.readAllBytes(Paths.get(filePath)));
     }
-    public String readLines (){
-        String text="";
+
+    public String readLines() {
+        String text = "";
         try {
             text = read();
-        }catch (Exception e){
-
+        } catch (Exception e) {
+            System.out.println("No such file");
         }
         String[] lines = text.split("(?<=\n)");
         String filtered = "";
-        for (int i = fromLine-1; i <= Math.min(toLine-1,lines.length-1);i++)
-        {
-            filtered+=lines[i];
+        for (int i = fromLine - 1; i <= Math.min(toLine - 1, lines.length - 1); i++) {
+            filtered = filtered.concat(lines[i]);
         }
         return filtered;
     }
